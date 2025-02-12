@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { useState, useEffect } from "react";
 import AuthPage from "./App/AuthPage";
 import { ApartmentTable } from "./App/page";
-import ProtectedRoute from "../../backend/routes/ProtectedRoute"; // Correct path to the file
 import Dashboard from "./App/Dashboard";
 
 function getUserId() {
@@ -32,9 +31,7 @@ function App() {
           path="/dashboard"
           element={
             userId ? (
-              <ProtectedRoute>
-                <Dashboard userId={userId} />
-              </ProtectedRoute>
+              <Dashboard userId={userId} />
             ) : (
               <Navigate to="/auth" replace />
             )
