@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Navigate } from 'react-router-dom'; // Import Navigate
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,32 +15,35 @@ export default function AuthPage() {
   const [name, setName] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [redirect, setRedirect] = useState(false); // <-- Ensure this is defined here
- 
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const endpoint = isLogin ? `${import.meta.env.VITE_API_URL}/api/auth/login` : `${import.meta.env.VITE_API_URL}/api/auth/register`;
-    
-        try {
-            const response = await fetch(endpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password }),
-            });
-    
-            const data = await response.json();
-            if (data.token) {
-                localStorage.setItem("userId", data.userId); // Store userId
-                localStorage.setItem("token", data.token); // Store token for future API requests
-                window.location.href = "/dashboard"; // Redirect after login
-            } else {
-                alert("Invalid credentials");
-            }
-        } catch (error) {
-            console.error("Login failed:", error);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const endpoint = isLogin ? `${import.meta.env.VITE_API_URL}/api/auth/login` : `${import.meta.env.VITE_API_URL}/api/auth/register`;
+  
+    try {
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await response.json();
+        if (data.token) {
+            localStorage.setItem("userId", data.userId); // Store userId
+            localStorage.setItem("token", data.token); // Store token for future API requests
+            setRedirect(true); // Set redirect to true upon successful login
+        } else {
+            alert("Invalid credentials");
         }
-    };
+    } catch (error) {
+        console.error("Login failed:", error);
+    }
+  };
 
+  // Redirect if login/signup is successful
+  if (redirect) {
+    return <Navigate to="/dashboard" />; // Redirect to the dashboard page
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
