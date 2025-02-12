@@ -27,7 +27,7 @@ export default function Dashboard({ userId }) {
 
   async function handleDelete(apartmentId) {
     try {
-      await fetch(`http://localhost:5000/api/apartments/${apartmentId}`, { method: "DELETE" })
+      await fetch(`${import.meta.env.VITE_API_URL}/api/apartments/${apartmentId}`, { method: "DELETE" })
       setApartments(apartments.filter((apartment) => apartment._id !== apartmentId))
     } catch (error) {
       console.error("Failed to delete apartment", error)
