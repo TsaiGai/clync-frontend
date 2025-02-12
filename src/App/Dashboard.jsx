@@ -11,7 +11,7 @@ export default function Dashboard({ userId }) {
 
     async function fetchUserApartments() {
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${userId}/apartments`)
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${userId}/apartments`)
         if (!response.ok) {
           throw new Error("Failed to fetch apartments")
         }
