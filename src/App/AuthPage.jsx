@@ -18,27 +18,41 @@ export default function AuthPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const endpoint = isLogin ? `${import.meta.env.VITE_API_URL}/api/auth/login` : `${import.meta.env.VITE_API_URL}/api/auth/register`;
+    const endpoint = isLogin 
+      ? `${import.meta.env.VITE_API_URL}/api/auth/login` 
+      : `${import.meta.env.VITE_API_URL}/api/auth/register`;
   
     try {
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password }),
-        });
-
-        const data = await response.json();
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+  
+      const data = await response.json();
+      if (isLogin) {
+        // Handle login
         if (data.token) {
-            localStorage.setItem("userId", data.userId); // Store userId
-            localStorage.setItem("token", data.token); // Store token for future API requests
-            setRedirect(true); // Set redirect to true upon successful login
+          localStorage.setItem("userId", data.userId);
+          localStorage.setItem("token", data.token);
+          setRedirect(true);
         } else {
-            alert("Invalid credentials");
+          alert("Invalid credentials");
         }
+      } else {
+        // Handle signup: Show success and redirect to login
+        if (data.success) {
+          alert("Account created successfully. Please log in.");
+          setIsLogin(true); // Switch to login view
+        } else {
+          alert(data.message || "Signup failed");
+        }
+      }
     } catch (error) {
-        console.error("Login failed:", error);
+      console.error(`${isLogin ? "Login" : "Signup"} failed:`, error);
     }
   };
+  
 
   // Redirect if login/signup is successful
   if (redirect) {
