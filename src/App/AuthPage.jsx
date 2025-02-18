@@ -5,15 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from "../components/ui/card";
 import { useAuth } from "../contexts/AuthContext";
-import { useAuthActions } from "../contexts/AuthContext"; // ✅ Use new hook
+import { useAuthActions } from "../contexts/AuthContext";
 
 export default function AuthPage() {
   const { userLoggedIn } = useAuth();
   const { login, register } = useAuthActions();
+  const [isRegisterSuccess, setIsRegisterSuccess] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,13 +23,16 @@ export default function AuthPage() {
         await login(email, password);
       } else {
         await register(name, email, password);
+        setIsRegisterSuccess(true);
       }
     } catch (error) {
       alert("Error, please try again.");
     }
   };
 
-  if (userLoggedIn) {
+  if (isRegisterSuccess) {
+    return <Navigate to="/login" />;
+  } else if (userLoggedIn) {
     return <Navigate to="/dashboard" />;
   }
 

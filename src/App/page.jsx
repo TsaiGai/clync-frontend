@@ -25,14 +25,6 @@ export function ApartmentTable({ apartments, onDelete, onToggleStatus }) {
             <TableCell>{apartment.status}</TableCell>
             <TableCell>
               <div className="flex space-x-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => onToggleStatus(apartment._id)}
-                  title={`Toggle ${apartment.status === "active" ? "Inactive" : "Active"}`}
-                >
-                  {apartment.status === "active" ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
-                </Button>
                 <Button variant="outline" size="icon" onClick={() => onDelete(apartment._id)} title="Delete">
                   <Trash2 className="h-4 w-4" />
                 </Button>
