@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from "react";
 import { ApartmentTable } from "./page";
 import { AddApartmentPopover } from "../components/ui/add-apartment-popover"; // Import the Popover
-import AuthContext from "../contexts/AuthContext"; // Import AuthContext
+import { useAuth } from "../contexts/AuthContext"; // Import AuthContext
 
 export default function Dashboard() {
-  const { userId } = useContext(AuthContext); // Get userId from context
+  const { userId } = useAuth(); // Get userId from context
   const [apartments, setApartments] = useState([]);
 
   useEffect(() => {
