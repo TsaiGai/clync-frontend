@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from "react-router-dom";
 import AuthPage from "./App/AuthPage";
 import Dashboard from "./App/Dashboard";
-import { AuthProvider, AuthContext } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import { useContext } from "react";
 
 function App() {
