@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthContext"; // Import AuthContext
 
 export default function Dashboard() {
   const { userId } = useAuth(); // Get userId from context
+  console.log(userId);
   const [apartments, setApartments] = useState([]);
 
   useEffect(() => {
@@ -36,22 +37,6 @@ export default function Dashboard() {
     }
   }
 
-  async function handleToggleStatus(apartmentId) {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/apartments/${apartmentId}/toggle`, {
-        method: "PUT",
-      });
-      const updatedApartment = await response.json();
-      setApartments(
-        apartments.map((apt) =>
-          apt._id === apartmentId ? { ...apt, status: updatedApartment.status } : apt
-        )
-      );
-    } catch (error) {
-      console.error("Failed to update apartment status", error);
-    }
-  }
-
   const handleAddApartment = (newApartment) => {
     setApartments((prev) => [...prev, newApartment]); // ✅ Only updates state
   };
@@ -66,7 +51,6 @@ export default function Dashboard() {
       <ApartmentTable
         apartments={apartments}
         onDelete={handleDelete}
-        onToggleStatus={handleToggleStatus}
       />
     </div>
   );
