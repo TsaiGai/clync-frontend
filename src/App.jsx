@@ -1,48 +1,40 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from "react-router-dom";
 import AuthPage from "./App/AuthPage";
-import { ApartmentTable } from "./App/page";
 import Dashboard from "./App/Dashboard";
-
-function getUserId() {
-  return localStorage.getItem("userId"); // Retrieve userId from storage
-}
+import { AuthProvider, AuthContext } from "./contexts/AuthContext";
+import { useContext } from "react";
 
 function App() {
-  const [userId, setUserId] = useState(localStorage.getItem("userId"));
-
-  useEffect(() => {
-    const checkStorage = () => {
-      setUserId(localStorage.getItem("userId"));
-    };
-
-    window.addEventListener("storage", checkStorage);
-    return () => window.removeEventListener("storage", checkStorage);
-  }, []);
-
   return (
-    <Router>
-      <Routes>
-        {/* Authentication Page */}
-        <Route path="/auth" element={<AuthPage />} />
-
-        {/* Protected Dashboard Page */}
-        <Route
-          path="/dashboard"
-          element={
-            userId ? (
-              <Dashboard userId={userId} />
-            ) : (
-              <Navigate to="/auth" replace />
-            )
-          }
-        />
-
-        {/* Default Route: Redirect to Auth Page */}
-        <Route path="*" element={<Navigate to="/auth" replace />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/dashboard/:userId" element={<ProtectedDashboard />} />
+          <Route path="/dashboard" element={<RedirectDashboard />} />
+          <Route path="*" element={<Navigate to="/auth" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
+}
+
+// Redirects to the correct user dashboard
+function RedirectDashboard() {
+  const { userId } = useContext(AuthContext);
+  return userId ? <Navigate to={`/dashboard/${userId}`} replace /> : <Navigate to="/auth" replace />;
+}
+
+// Protected dashboard component
+function ProtectedDashboard() {
+  const { userId } = useContext(AuthContext);
+  const { userId: routeUserId } = useParams();
+
+  if (!userId || userId !== routeUserId) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return <Dashboard userId={userId} />;
 }
 
 export default App;

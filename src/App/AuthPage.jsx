@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter} from '../components/ui/card';
 import { doSignInWithEmailAndPassword } from '../firebase/auth';
-import { useAuth } from '../contexts/authContext';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AuthPage() {
   const { userLoggedIn } = useAuth();
