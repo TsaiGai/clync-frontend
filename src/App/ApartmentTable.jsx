@@ -11,7 +11,6 @@ export function ApartmentTable({ apartments, onDelete, onToggleStatus }) {
           <TableHead>Floor Plan Type</TableHead>
           <TableHead>Floor Plan Name</TableHead>
           <TableHead>Special Request</TableHead>
-          <TableHead>Status</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -22,7 +21,6 @@ export function ApartmentTable({ apartments, onDelete, onToggleStatus }) {
             <TableCell>{apartment.unit_type}</TableCell>
             <TableCell>{apartment.floorplan || "N/A"}</TableCell>
             <TableCell>{apartment.special_request || "N/A"}</TableCell>
-            <TableCell>{apartment.status}</TableCell>
             <TableCell>
               <div className="flex space-x-2">
                 <Button variant="outline" size="icon" onClick={() => onDelete(apartment._id)} title="Delete">

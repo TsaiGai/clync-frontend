@@ -6,22 +6,12 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  // State for user login status and authentication token
-  const [userLoggedIn, setUserLoggedIn] = useState(null);
+  // Initialize state from localStorage
   const [authToken, setAuthToken] = useState(localStorage.getItem("authToken"));
-  const [userId, setUserId] = useState(localStorage.getItem("userId")); // Add userId state
+  const [userId, setUserId] = useState(localStorage.getItem("userId"));
+  const [userLoggedIn, setUserLoggedIn] = useState(!!userId); // Convert userId to boolean
 
-  // Effect to sync user and token with localStorage
-  useEffect(() => {
-    if (userLoggedIn) {
-      localStorage.setItem("userId", userLoggedIn);
-      setUserId(userLoggedIn); // Update userId state
-    } else {
-      localStorage.removeItem("userId");
-      setUserId(null); // Clear userId state
-    }
-  }, [userLoggedIn]);
-
+  // Effect to sync authentication data
   useEffect(() => {
     if (authToken) {
       localStorage.setItem("authToken", authToken);
@@ -30,8 +20,18 @@ export function AuthProvider({ children }) {
     }
   }, [authToken]);
 
+  useEffect(() => {
+    if (userId) {
+      localStorage.setItem("userId", userId);
+      setUserLoggedIn(true);
+    } else {
+      localStorage.removeItem("userId");
+      setUserLoggedIn(false);
+    }
+  }, [userId]);
+
   return (
-    <AuthContext.Provider value={{ userLoggedIn, setUserLoggedIn, authToken, setAuthToken, userId }}>
+    <AuthContext.Provider value={{ userLoggedIn, setUserLoggedIn, authToken, setAuthToken, userId, setUserId }}>
       {children}
     </AuthContext.Provider>
   );
@@ -42,27 +42,28 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-// Custom hook for auth actions (login, register, logout)
+// Custom hook for authentication actions
 export function useAuthActions() {
-  const context = useAuth();
-  
-  // Ensure it's used inside AuthProvider
-  if (!context) {
+  const { setUserLoggedIn, setAuthToken, setUserId } = useAuth();
+  const navigate = useNavigate();
+
+  if (!setUserLoggedIn || !setAuthToken || !setUserId) {
     throw new Error("useAuthActions must be used within an AuthProvider");
   }
-
-  const { setUserLoggedIn, setAuthToken } = context;
-  const navigate = useNavigate();
 
   // Login function
   async function login(email, password) {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
       const { token, userId } = response.data;
-      setUserLoggedIn(userId);
+
+      setUserLoggedIn(true);
       setAuthToken(token);
+      setUserId(userId);
+
       localStorage.setItem("authToken", token);
-      localStorage.setItem("userId", userId);  // Store userId in localStorage
+      localStorage.setItem("userId", userId);
+
       navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error.response?.data?.error || error);
@@ -73,7 +74,7 @@ export function useAuthActions() {
   // Register function
   async function register(name, email, password) {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, { name, email, password });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, { name, email, password });
       navigate("/login");
     } catch (error) {
       console.error("Signup failed:", error.response?.data?.error || error);
@@ -83,9 +84,12 @@ export function useAuthActions() {
 
   // Logout function
   function logout() {
-    setUserLoggedIn(null);
+    setUserLoggedIn(false);
     setAuthToken(null);
-    localStorage.clear(); // Clear all auth-related data from localStorage
+    setUserId(null);
+
+    localStorage.clear(); // Clear all auth-related data
+
     navigate("/login");
   }
 
