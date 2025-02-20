@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ApartmentTable } from "./ApartmentTable";
-import { AddApartmentForm } from "./AddApartmentForm"; // Adjust path as necessary
+import { AddApartmentForm } from "./AddApartmentForm";
 import { useAuth } from "../contexts/AuthContext";
 import { useAuthActions } from "../contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,7 @@ export default function Dashboard() {
     setApartments((prev) => [...prev, newApartment]);
   };
 
+  // Function to handle apartment deletion
   const handleDelete = async (apartmentId) => {
     try {
       await fetch(`${import.meta.env.VITE_API_URL}/api/apartments/${apartmentId}`, { method: "DELETE" });
@@ -43,6 +44,7 @@ export default function Dashboard() {
     }
   };
 
+  // Function to handle logout
   const handleLogout = () => {
     logout();
   };

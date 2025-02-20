@@ -1,8 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Trash2, ToggleLeft, ToggleRight } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
-export function ApartmentTable({ apartments, onDelete, onToggleStatus }) {
+export function ApartmentTable({ apartments, onDelete }) {
   return (
     <Table>
       <TableHeader>
