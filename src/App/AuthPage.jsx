@@ -15,9 +15,25 @@ export default function AuthPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  // Function to validate password
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
+    // If registering, validate password
+    if (!isLogin && !validatePassword(password)) {
+      setError("Password must be at least 8 characters long and include at least one uppercase letter, " +
+        "one lowercase letter, one number, and one special character (@$!%*?&).");
+      return;
+    }
+
     try {
       if (isLogin) {
         await login(email, password);
@@ -26,7 +42,7 @@ export default function AuthPage() {
         setIsRegisterSuccess(true);
       }
     } catch (error) {
-      alert("Error, please try again.");
+      setError("Error, please try again.");
     }
   };
 
@@ -61,6 +77,7 @@ export default function AuthPage() {
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                {error && <p className="text-red-500 text-sm">{error}</p>}
               </div>
             </div>
             <Button type="submit" className="w-full mt-4">
