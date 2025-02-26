@@ -53,7 +53,7 @@ export default function Dashboard() {
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Welcome to Clync</h1>
-        <Button onClick={handleLogout} variant="destructive" size="sm">
+        <Button onClick={handleLogout}>
           Logout
         </Button>
       </div>

@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "../contexts/AuthContext";
 
 export function AddApartmentForm({ onAddApartment }) {
+  const { userId } = useAuth();
   const [propertyName, setPropertyName] = useState("");
   const [floorPlanType, setFloorPlanType] = useState("");
   const [floorPlanName, setFloorPlanName] = useState("");
@@ -18,7 +20,6 @@ export function AddApartmentForm({ onAddApartment }) {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    const userId = localStorage.getItem("userId");
     if (!userId) {
       console.error("User ID is missing!");
       setIsSubmitting(false);

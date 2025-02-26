@@ -42,7 +42,11 @@ export default function AuthPage() {
         setIsRegisterSuccess(true);
       }
     } catch (error) {
-      setError("Error, please try again.");
+      if (error.response?.data?.message) {
+        setError(error.response.data.message); // Set error message from backend
+      } else {
+        setError("Error. Please try again.");
+      }
     }
   };
 
