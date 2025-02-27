@@ -27,13 +27,21 @@ export function ApartmentTable({ apartments, onDelete, onUpdate }) {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/apartments/${id}`, {
+      const apiUrl = `${import.meta.env.VITE_API_URL}/api/apartments/${id}`;
+      
+      const response = await fetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...editForm, users: [userId] }),
+        credentials: "include" // Include cookies if you're using session-based auth
       });
 
-      if (!response.ok) throw new Error("Failed to update apartment");
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Error response:", errorData);
+        throw new Error(`Failed to update apartment: ${errorData.error || response.statusText}`);
+      }
 
       const updatedApartment = await response.json();
 

@@ -34,6 +34,11 @@ export default function Dashboard() {
     setApartments((prev) => [...prev, newApartment]);
   };
 
+  // Function to handle apartment update
+  const handleUpdate = (updatedApartments) => {
+    setApartments(updatedApartments);
+  };
+
   // Function to handle apartment deletion
   const handleDelete = async (apartmentId) => {
     try {
@@ -63,6 +68,7 @@ export default function Dashboard() {
       <ApartmentTable
         apartments={apartments}
         onDelete={handleDelete}
+        onUpdate={handleUpdate}
       />
     </div>
   );
